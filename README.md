@@ -9,7 +9,6 @@ L'applicazione permette di:
 - Eseguire verifiche semantiche sul codice usando un visitor pattern per controllare la validità di dichiarazioni e operazioni.
 - Offrire un'interfaccia grafica interattiva per caricare il codice, visualizzare errori e correggerli facilmente.
 
-Questo strumento fornisce un ambiente di sviluppo utile per chi desidera analizzare e correggere il codice in modo automatico durante la fase di scrittura, favorendo un miglior flusso di lavoro e una maggiore qualità del codice.
 
 ---
 
