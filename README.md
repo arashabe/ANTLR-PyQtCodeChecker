@@ -1,3 +1,4 @@
+![Logo Università](https://www.unibg.it/themes/custom/unibg/logo.svg) 
 # **ANTLR-PyQtCodeChecker**
 
 Questo progetto è stato sviluppato per il corso di **Linguaggi Formali e Compilatori (LFC)**, con l'obiettivo di creare un **analizzatore di codice** in grado di rilevare errori lessicali, sintattici e semantici in un linguaggio di programmazione semplice definito da una grammatica personalizzata. L'analizzatore utilizza **ANTLR** per generare il lexer e il parser, mentre l'interfaccia utente (GUI) è realizzata utilizzando **PyQt5**.
