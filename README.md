@@ -39,16 +39,16 @@ Il progetto utilizza una serie di strumenti per implementare e far funzionare co
    ```
 
 4. **Scaricare ANTLR JAR**:
-   Scaricare `antlr-4.9.2-complete.jar` da [https://www.antlr.org/download.html](https://www.antlr.org/download.html) e salvare in una directory accessibile, ad esempio `C:\Program Files\antlr`.
+   Scaricare `antlr-4.9.2-complete.jar` da [https://www.antlr.org/download.html](https://www.npackd.org/p/antlr/4.9.2) e salvare in una directory accessibile, ad esempio `C:\Program Files\antlr`.
 
 5. **Generare il Lexer e Parser**:
    - Creare il file della grammatica `Language.g4` nella cartella principale del progetto e aggiungere le regole del linguaggio.
-   - Dal terminale, esegui il seguente comando per generare i file Python per il lexer, parser e visitor:
+   - Dal terminale, eseguire il seguente comando per generare i file Python per il lexer, parser e visitor:
      ```bash
      java -jar "C:\Program Files\antlr\antlr-4.9.2-complete.jar" -Dlanguage=Python3 -visitor Language.g4 -o generated
      ```
 
-6. **Verifica la Struttura dei File Generati**:
+6. **Verificare la Struttura dei File Generati**:
    Si deve avere una cartella `generated` con i file:
    - `LanguageLexer.py`: il lexer generato per riconoscere i token.
    - `LanguageParser.py`: il parser generato per analizzare la struttura sintattica.
@@ -69,7 +69,7 @@ Il progetto utilizza una serie di strumenti per implementare e far funzionare co
 ### 3. `Driver.py`
    - È un file di test per il lexer e il parser generati da ANTLR.
    - Serve per verificare che il lexer e parser funzionino correttamente anche senza l’interfaccia grafica.
-   - Puoi utilizzarlo eseguendo il comando `python Driver.py input.txt`, dove `input.txt` è un file di esempio.
+   - Possiamo utilizzarlo eseguendo il comando `python Driver.py input.txt`, dove `input.txt` è un file di esempio.
 
 ### 4. `semantic_analyzer.py`
    - Contiene la classe `SemanticAnalyzer`, che estende il visitor generato da ANTLR (`LanguageVisitor`).
