@@ -21,6 +21,7 @@ The project uses a series of tools to implement and run the code analyzer correc
 - **Python 3.x**: To run the application and handle the program logic.
 - **PyQt5**: To build the graphical user interface (GUI).
 - **Git**: For version control and repository management.
+- **PyCharm**: Recommended IDE for Python development.
 
 
 
