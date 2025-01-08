@@ -150,7 +150,7 @@ To effectively work on this project in PyCharm, ensure that the following plugin
 1. Start the project by running `main.py`:
    ```bash
    python main.py
-
+   ```
 
 2. Enter some code in the text area, for example:
    ```plaintext
