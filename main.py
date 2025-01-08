@@ -166,9 +166,9 @@ class CodeAnalyzerGUI(QMainWindow):
                     # Use CustomErrorMessage class to transform the error message
                     msg = CustomErrorMessage.transform(msg, offendingSymbol)
 
-                    if "at '<EOF>'" in msg:
+                    if "'<EOF>'" in msg:
                         msg = msg.replace(" at '<EOF>'", "")
-                    parser_errors.append((line, f"Error at line {line}, column {column}: {msg}"))
+                    parser_errors.append((line, f"Error at line {line}, column {column}:  SyntaxError"))
 
             parser.removeErrorListeners()
             parser.addErrorListener(ParserErrorListener())
