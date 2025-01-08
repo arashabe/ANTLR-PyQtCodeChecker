@@ -1,15 +1,13 @@
-# Exclude virtual environment
 venv/
 
-# Exclude PyCharm project files
 .idea/
 
-# Exclude generated files
 generated/
 
-# Exclude Python cache files
 __pycache__/
 *.py[cod]
 
-# Exclude system files
 .DS_Store
+
+input.txt
+Driver.py
