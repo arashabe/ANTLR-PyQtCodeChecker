@@ -212,6 +212,7 @@ To effectively work on this project in PyCharm, ensure that the following plugin
 <div style="text-align: center;">
 <img src="images/demo_1.PNG" alt="App Screenshot" width="800"/>
 </div>
+
 ---
 
 
