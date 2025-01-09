@@ -1,33 +1,46 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QTextEdit, QVBoxLayout, QWidget,
                              QToolBar, QAction, QMessageBox)
-
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon, QPixmap, QTextCursor, QColor, QTextCharFormat
 from antlr4 import InputStream, CommonTokenStream
 from antlr4.error.ErrorListener import ErrorListener
 from generated.LanguageLexer import LanguageLexer
 from generated.LanguageParser import LanguageParser
 from semantic_analyzer import SemanticAnalyzer
-from PyQt5.QtGui import QIcon, QPixmap
 
 
 class CustomErrorMessage:
+    # Provides utility methods for transforming default error messages into more readable and user-friendly text.
     @staticmethod
     def transform(msg, offending_symbol):
-        # Transforms the default error message into something more readable
-        if "no viable alternative at input" in msg:
+        # Transforms specific parser error messages into clearer explanations.
+        # like unexpected end of input and incomplete statements.
+        if "mismatched input '<EOF>'" in msg:
+            return "Unexpected end of input: check for missing or incomplete statements."
+        elif "no viable alternative at input" in msg:
+            if offending_symbol.text == "<EOF>":
+                return "Incomplete statement or missing input at the end of the code."
             return f"Error near '{offending_symbol.text}'"
         return msg
 
 
 class CodeAnalyzerGUI(QMainWindow):
+    # Main GUI class for the code analyzer application.
+    # Provides a text editor for writing code, an output console for displaying errors,
+    # and tools for analyzing and interacting with the input code.
     def __init__(self):
         super().__init__()
         self.setWindowTitle("BugBuster")
         self.setGeometry(100, 100, 800, 600)
+        self.error_lines = {}
         self.initUI()
 
     def initUI(self):
+        # Initializes the user interface elements, including the code editor,
+        # output console, toolbar, and layout.
+        # Sets up actions like running analysis, cleaning input, and exiting the application.
+
         # Text area to input code
         self.code_input = QTextEdit(self)
         self.code_input.setPlaceholderText("Write code here...")
@@ -36,6 +49,7 @@ class CodeAnalyzerGUI(QMainWindow):
         self.output_console = QTextEdit(self)
         self.output_console.setReadOnly(True)
         self.output_console.setPlaceholderText("Output console...")
+        self.output_console.mousePressEvent = self.handle_output_click
 
         # Layout
         layout = QVBoxLayout()
@@ -80,7 +94,6 @@ class CodeAnalyzerGUI(QMainWindow):
         self.apply_stylesheet()
 
     def check_text(self):
-        # Check if the text area is not empty
         if self.code_input.toPlainText().strip():
             self.run_action.setEnabled(True)
         else:
@@ -88,111 +101,99 @@ class CodeAnalyzerGUI(QMainWindow):
 
     def apply_stylesheet(self):
         self.setStyleSheet("""
-            /* Set background color for the entire window */
-        QMainWindow {
-            background-color: #3f4240;  
-        }
-            QToolBar QToolButton {
-                /*background-color: lightgreen;*/
-                /*border: 1px solid white; */
-                margin: 2px; 
-                padding: 5px;
-                color: white;
-                font-size: 18px;
-            }
-            QToolBar QToolButton:hover {
-                background-color: #161716;
-                color: white;
-            }
-
-        /* Settings for the code editor */
-        QTextEdit {
-            background-color: #202420;
-            border: 1px solid #055405;
-            color: white;
-            font-family: Consolas, monaco, monospace;
-            font-size: 18px;
-        }
-
-        /* Settings for the error console */
-        QTextEdit[readOnly="true"] {
-            background-color: #202420;
-            border: 1px solid #055405;
-            color: white;
-            font-family: Consolas, monaco, monospace;
-            font-size: 14px;
-        }
+            QMainWindow { background-color: #3f4240; }
+            QToolBar QToolButton { margin: 2px; padding: 5px; color: white; font-size: 18px; }
+            QToolBar QToolButton:hover { background-color: #161716; color: white; }
+            QTextEdit { background-color: #202420; border: 1px solid #055405; color: white; font-family: Consolas, monaco, monospace; font-size: 18px; }
+            QTextEdit[readOnly="true"] { background-color: #202420; border: 1px solid #055405; color: white; font-family: Consolas, monaco, monospace; font-size: 14px; }
         """)
 
     def run_analysis(self):
+        # Performs lexical, syntactic, and semantic analysis on the user's code.
+        # Collects errors from each phase of analysis and displays them in the output console.
         try:
-            # Get the code from the text area
             input_code = self.code_input.toPlainText()
-
-            # ANTLR for tokenizing
             input_stream = InputStream(input_code)
             lexer = LanguageLexer(input_stream)
-
-            # Listener for lexical errors
             lexer_errors = []
 
             class LexerErrorListener(ErrorListener):
+                # Custom error listener for the parser to capture and format syntax errors.
+                # Overrides the default error handling mechanism to provide more user-friendly messages.
                 def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
                     lexer_errors.append((line, f"Error at line {line}, column {column}: {msg}"))
 
             lexer.removeErrorListeners()
             lexer.addErrorListener(LexerErrorListener())
-
-            # Generate token stream
             token_stream = CommonTokenStream(lexer)
-            token_stream.fill()  # Force token population
+            token_stream.fill()
 
-            # Manual check for UNKNOWN tokens
             for token in token_stream.tokens:
                 if token.type == lexer.UNKNOWN:
                     lexer_errors.append(
-                        (token.line,
-                         f"Error at line {token.line}, column {token.column}: unrecognized symbol '{token.text}'")
+                        (token.line, f"Error at line {token.line}, column {token.column}: unrecognized symbol '{token.text}'")
                     )
 
-            # Parsing and getting the parse tree
             parser = LanguageParser(token_stream)
-
-            # Custom listener for syntactic errors
             parser_errors = []
 
             class ParserErrorListener(ErrorListener):
                 def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
-                    # Use CustomErrorMessage class to transform the error message
                     msg = CustomErrorMessage.transform(msg, offendingSymbol)
 
                     if "'<EOF>'" in msg:
                         msg = msg.replace(" at '<EOF>'", "")
-                    parser_errors.append((line, f"Error at line {line}, column {column}:  SyntaxError"))
+                    parser_errors.append((line, f"Error at line {line}, column {column},  {msg}"))
 
             parser.removeErrorListeners()
             parser.addErrorListener(ParserErrorListener())
-
             tree = parser.start_()
 
-            # Semantic analysis
             semantic_analyzer = SemanticAnalyzer()
             semantic_analyzer.visit(tree)
 
-            # Combine lexical, syntactic, and semantic errors
-            all_errors = lexer_errors + parser_errors + [(line, err) for err in semantic_analyzer.errors for line in
-                                                         [int(err.split()[3][:-1])]]
-
-            # Sort errors by line number
+            all_errors = lexer_errors + parser_errors + [(line, err) for err in semantic_analyzer.errors for line in [int(err.split()[3][:-1])]]
             all_errors.sort(key=lambda x: x[0])
 
+            self.error_lines = {}
             if all_errors:
-                self.output_console.setPlainText("\n".join([error[1] for error in all_errors]))
+                self.output_console.clear()
+                for line, message in all_errors:
+                    self.error_lines[message] = line
+                    self.output_console.append(message)
             else:
                 self.output_console.setPlainText("No errors found!")
 
         except Exception as e:
             self.show_error_message(f"An error occurred: {str(e)}")
+
+    def handle_output_click(self, event):
+        # Handles user clicks on the output console.
+        # Checks if the clicked error message corresponds to a specific line number
+        # and highlights that line in the code editor.
+        cursor = self.output_console.cursorForPosition(event.pos())
+        cursor.select(QTextCursor.LineUnderCursor)
+        clicked_text = cursor.selectedText()
+
+        if clicked_text in self.error_lines:
+            line_number = self.error_lines[clicked_text]
+            self.highlight_line(line_number)
+
+    def highlight_line(self, line_number):
+        # Highlights the specified line in the code editor.
+        # Moves the cursor to the given line and sets focus on the editor for clarity.
+        cursor = self.code_input.textCursor()
+        cursor.movePosition(QTextCursor.Start)
+        for _ in range(line_number - 1):
+            cursor.movePosition(QTextCursor.Down)
+        extra_selection = QTextEdit.ExtraSelection()
+        line_color = QColor("#383631")
+        extra_selection.format.setBackground(line_color)
+        extra_selection.format.setProperty(QTextCharFormat.FullWidthSelection, True)
+        extra_selection.cursor = cursor
+        self.code_input.setExtraSelections([extra_selection])
+        self.code_input.setTextCursor(cursor)
+        self.code_input.setFocus()
 
     def show_error_message(self, message):
         QMessageBox.critical(self, "Error", message, QMessageBox.Ok)
@@ -212,8 +213,7 @@ class CodeAnalyzerGUI(QMainWindow):
         QMessageBox.information(self, "Information", info_text)
 
     def confirm_exit(self):
-        reply = QMessageBox.question(self, "Exit", "Are you sure you want to exit?", QMessageBox.Yes | QMessageBox.No,
-                                     QMessageBox.No)
+        reply = QMessageBox.question(self, "Exit", "Are you sure you want to exit?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
             QApplication.instance().quit()
 
@@ -222,9 +222,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = CodeAnalyzerGUI()
     logo_pixmap = QPixmap("images/logo.png")
-
     logo_pixmap = logo_pixmap.scaled(64, 64, aspectRatioMode=Qt.KeepAspectRatio)
-
     app.setWindowIcon(QIcon(logo_pixmap))
     window.show()
     sys.exit(app.exec_())
