@@ -187,7 +187,7 @@ class CodeAnalyzerGUI(QMainWindow):
             all_errors.sort(key=lambda x: x[0])
 
             if all_errors:
-                self.output_console.setPlainText("Errors found:\n" + "\n".join([error[1] for error in all_errors]))
+                self.output_console.setPlainText("\n".join([error[1] for error in all_errors]))
             else:
                 self.output_console.setPlainText("No errors found!")
 
