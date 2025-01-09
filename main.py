@@ -17,8 +17,10 @@ class CustomErrorMessage:
         # Transforms specific parser error messages into clearer explanations.
         # like unexpected end of input and incomplete statements.
         if "mismatched input '<EOF>'" in msg:
-            return "Unexpected end of input: check for missing or incomplete statements."
-        elif "no viable alternative at input" in msg:
+            if offending_symbol.text == "<EOF>":
+                return "Unexpected end of input: check for missing or incomplete statements."
+            return f"Error near '{offending_symbol.text}'"
+        if "no viable alternative at input" in msg:
             if offending_symbol.text == "<EOF>":
                 return "Incomplete statement or missing input at the end of the code."
             return f"Error near '{offending_symbol.text}'"
