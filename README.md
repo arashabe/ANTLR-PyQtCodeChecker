@@ -205,12 +205,12 @@ To effectively work on this project in PyCharm, ensure that the following plugin
    ```
 
 3. Click on “Run” to execute the analysis:
-   - Errors will be displayed in the output console.
+   - Errors will be displayed in the output console and, by clicking on the specific error message, the line of code containing the error will be highlighted and shown.
    - If there are no errors, the message “No errors found!” will appear.
 
    
 <div style="text-align: center;">
-<img src="images/demo_1.PNG" alt="App Screenshot" width="800"/>
+<img src="images/demo_3.PNG" alt="App Screenshot" width="800"/>
 </div>
 
 ---
