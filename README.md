@@ -111,10 +111,12 @@ ANTLR4-BugBuster/
 └── semantic_analyzer.py
 ```
 
+## PyCharm Basic Configuration:
 
+1. Select `File | Settings | Project: ANTLR4-BugBuster | Project Interpreter`.
+2. Set the Project Interpreter to the version of Python you are using.
+3. Click on the `+`, find, and install the third-party libraries:
 
-## PyCharm Plugins
-To effectively work on this project in PyCharm, ensure that the following plugins and packages are installed:
   - **PyQt5**: Provides support for PyQt5 libraries for creating GUI applications.
   - **pyqt5-qt5**: Required for specific Qt5 functionalities.
   - **cx-freeze**: Used for packaging Python scripts into executables.
