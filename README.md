@@ -1,6 +1,6 @@
 # <img src="images/logo.png" alt="App Screenshot" width="40"/>  **ANTLR4-BugBuster**
 
-This project was developed for the ["Formal Languages and Compilers"](https://unibg.coursecatalogue.cineca.it/insegnamenti/2023/3212_35538_10011/2021/3212/89?coorte=2022&schemaid=68842) course, which is part of the master's degree program in Computer Engineering. It aims to create a **code analyzer** capable of detecting lexical, syntactic, and semantic errors in a simple programming language based on a **Java-like grammar** defined by a custom grammar. 
+This project was developed for the [**Formal Languages and Compilers**](https://unibg.coursecatalogue.cineca.it/insegnamenti/2023/3212_35538_10011/2021/3212/89?coorte=2022&schemaid=68842) course, which is part of the master's degree program in Computer Engineering. It aims to create a **code analyzer** capable of detecting lexical, syntactic, and semantic errors in a simple programming language based on a **Java-like grammar** defined by a custom grammar. 
 
 The grammar, while not complete, was designed to explore the capabilities of **ANTLR4** and demonstrate how to bridge theoretical concepts with practical applications. The project aims to showcase the process of building a lexer and parser for a Java-like language, integrating these components with a **PyQt5**-based user interface to allow interactive analysis of code.
 
@@ -18,7 +18,7 @@ The application allows users to:
 
 ---
 ### Course Overview
-In the ["Formal Languages and Compilers"](https://unibg.coursecatalogue.cineca.it/insegnamenti/2023/3212_35538_10011/2021/3212/89?coorte=2022&schemaid=68842) course, we explored a wide range of fundamental theoretical and practical concepts for understanding and implementing programming languages and compilers. The main topics of the course include:
+In the **Formal Languages and Compilers** course, we explored a wide range of fundamental theoretical and practical concepts for understanding and implementing programming languages and compilers. The main topics of the course include:
 
 1. **Basic Concepts**: Introduction to alphabets, strings, languages, and operations on them.
 2. **Regular Expressions and Languages**: Study of regular expressions, their composition rules, and the properties of regular languages.
